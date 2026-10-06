@@ -1,0 +1,18 @@
+{
+  "schema": "portfolio-demo-v1",
+  "synthetic": true,
+  "customer": "Sakura Residence Demo Project",
+  "project": "Three-sector irrigation example",
+  "sectors": ["North lawn", "South lawn", "Garden beds"],
+  "materials": [
+    {"sector": "North lawn", "code": "DEMO-SPRAY", "name": "Generic spray head", "unit": "each", "quantity": 6},
+    {"sector": "South lawn", "code": "DEMO-SPRAY", "name": "Generic spray head", "unit": "each", "quantity": 6},
+    {"sector": "Garden beds", "code": "DEMO-DRIP", "name": "Generic dripline", "unit": "m", "quantity": 90},
+    {"sector": "North lawn", "code": "DEMO-VALVE", "name": "Generic irrigation valve", "unit": "each", "quantity": 1},
+    {"sector": "South lawn", "code": "DEMO-VALVE", "name": "Generic irrigation valve", "unit": "each", "quantity": 1},
+    {"sector": "Garden beds", "code": "DEMO-VALVE", "name": "Generic irrigation valve", "unit": "each", "quantity": 1},
+    {"sector": "North lawn", "code": "DEMO-PIPE", "name": "Generic PVC pipe", "unit": "m", "quantity": 60},
+    {"sector": "South lawn", "code": "DEMO-PIPE", "name": "Generic PVC pipe", "unit": "m", "quantity": 75}
+  ],
+  "duty": {"flow_m3h": 6, "lift_m": 20, "pressure_head_m": 30, "assumed_losses_m": 5}
+}

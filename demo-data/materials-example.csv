@@ -1,0 +1,5 @@
+Demo identifier,Material,Unit,Quantity
+DEMO-SPRAY,Generic spray head,each,12
+DEMO-DRIP,Generic dripline,m,90
+DEMO-VALVE,Generic irrigation valve,each,3
+DEMO-PIPE,Generic PVC pipe,m,135

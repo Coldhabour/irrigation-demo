@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Irrigation Materials — Demo</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="demo.js" defer></script>
+  <script src="pump-catalog.js" defer></script>
+  <script src="pump-demo.js" defer></script>
+</head>
+<body>
+  <header class="app-header"><strong>Irrigation Materials</strong><span>Portfolio demo · Fictional data</span></header>
+  <nav aria-label="Demonstration views">
+    <button data-view="overview" aria-current="page">Project</button>
+    <button data-view="input">Materials</button>
+    <button data-view="pump">Pump</button>
+    <button data-view="customer">Customer</button>
+  </nav>
+  <main>
+    <section id="overview" class="view">
+      <h1>Project</h1>
+      <div class="panel"><h2>Sakura Residence Demo Project</h2>
+        <dl class="details"><dt>Description</dt><dd>Three-sector irrigation example</dd><dt>Sectors</dt><dd>North lawn, South lawn, Garden beds</dd><dt>Materials</dt><dd>8 input rows, 4 material groups</dd><dt>Required flow</dt><dd>6 m³/h</dd><dt>Required head</dt><dd>55 m of water</dd></dl>
+        <div class="actions"><button class="primary" data-go="pump">Test pump selection</button><button class="primary" data-go="input">Open materials</button></div>
+      </div>
+      <h2>Try it</h2>
+      <ol class="instructions"><li>Open Pump and calculate the example: 6 m³/h at 55 m.</li><li>Select a pump in the results to see its curve and head margin.</li><li>Change the flow or head, then print the report or download the graph.</li></ol>
+      <p>Eight invented pump models are included. Their curves are examples for testing the selection workflow.</p>
+    </section>
+    <section id="input" class="view" hidden>
+      <h1>Materials</h1><p>Edit the quantities, then click Update list.</p>
+      <div class="panel">
+        <div class="table-wrap"><table><caption class="sr-only">Synthetic material input</caption><thead><tr><th>Sector</th><th>Material</th><th>Unit</th><th class="number">Quantity</th></tr></thead><tbody id="input-rows"></tbody></table></div>
+        <div class="actions"><button id="process" class="primary">Update list</button><a href="../demo-data/project.json" download>Download sample input</a></div>
+        <p id="input-status" role="status">Reload the page to restore the original quantities.</p>
+      </div>
+      <div id="materials">
+      <div class="panel">
+        <div class="panel-title"><h2>Material list</h2><span id="group-count">4 material groups</span></div>
+        <div class="table-wrap"><table><caption class="sr-only">Grouped synthetic material quantities</caption><thead><tr><th>Code</th><th>Material</th><th>Unit</th><th class="number">Quantity</th></tr></thead><tbody id="result-rows"></tbody></table></div>
+        <div class="actions"><button id="download-csv" class="primary">Export CSV</button><a href="../demo-data/materials-example.xlsx" download>Download sample Excel</a></div>
+        <p class="footnote">CSV uses the current quantities. The Excel file is a fixed example.</p>
+      </div><p>Rows with the same code and unit are grouped. No prices are included.</p>
+      </div>
+    </section>
+    <section id="pump" class="view" hidden>
+      <h1>Pump selection</h1>
+      <p>Enter a duty point, calculate, then select a model. All eight pumps and their curves are fictional.</p>
+      <div class="actions presets"><span>Examples:</span><button type="button" data-preset="standard">6 m³/h · 55 m</button><button type="button" data-preset="high-flow">12 m³/h · 35 m</button><button type="button" data-preset="high-head">4 m³/h · 110 m</button><button type="button" data-preset="no-match">20 m³/h · 150 m</button></div>
+      <div class="pump-grid">
+        <form id="pump-form" class="panel"><h2>Inputs</h2>
+          <label for="head-mode">Head input</label><select id="head-mode"><option value="system">Lift + pressure + losses</option><option value="direct">Total required head</option></select>
+          <label for="flow">Flow (m³/h)</label><input id="flow" type="number" min="0.1" max="1000" step="0.1" value="6" required>
+          <div id="head-components"><label for="lift">Lift (m)</label><input id="lift" type="number" min="0" max="1000" step="0.1" value="20" required>
+          <label for="pressure">Operating pressure head (m)</label><input id="pressure" type="number" min="0" max="1000" step="0.1" value="30" required>
+          <label for="losses">Losses at required flow (m)</label><input id="losses" type="number" min="0" max="1000" step="0.1" value="5" required></div>
+          <div id="direct-head-field" hidden><label for="required-head">Total head (m of water)</label><input id="required-head" type="number" min="0.1" max="1000" step="0.1" value="55" disabled required></div>
+          <div class="actions"><button class="primary" type="submit">Calculate and select</button></div><p id="pump-error" role="alert"></p><p id="pump-status" role="status">Calculate to compare the catalog.</p>
+        </form>
+        <div class="panel result-panel"><h2>Result</h2>
+          <p class="head-number">Required head: <strong><span id="total-head">55</span> m</strong></p><p id="flow-result">at 6 m³/h supplied flow</p>
+          <p id="selected-summary"></p>
+          <p id="selection-explanation"></p>
+          <p class="footnote">Available head is interpolated between invented catalog points. Models are ranked by the smallest nonnegative head margin. Nominal power is fictional metadata, not a motor-sizing result.</p>
+          <div class="actions"><button id="print-pump" type="button" disabled>Print report / Save PDF</button><button id="download-graph" type="button" disabled>Download graph (SVG)</button><button id="download-catalog" type="button">Download fictional catalog</button></div>
+        </div>
+      </div>
+      <div class="panel"><h2>Catalog comparison</h2><div class="table-wrap"><table><thead><tr><th>Select</th><th>Model</th><th>Nominal kW</th><th>Flow range (m³/h)</th><th>Head at your flow (m)</th><th>Margin (m)</th><th>Result</th></tr></thead><tbody id="pump-rows"></tbody></table></div></div>
+      <div id="pump-report" class="panel">
+        <h2>Pump curve report</h2><p id="report-summary"></p>
+        <label class="inline-control"><input type="checkbox" id="show-all-curves"> Compare all fictional pump curves</label>
+        <div id="curve-chart" class="chart" aria-label="Pump performance chart"></div>
+        <p id="operating-summary"></p>
+        <p id="curve-method" class="footnote"></p>
+        <div class="report-grid"><div><h3>Selected curve points</h3><table><thead><tr><th>Flow (m³/h)</th><th>Head (m)</th></tr></thead><tbody id="curve-points"></tbody></table></div><div><h3>Head composition</h3><div id="head-chart" class="chart" aria-label="Head composition chart"></div></div></div>
+        <p class="footnote">Fictional data for demonstration only. No real manufacturer, customer or company catalog is used.</p>
+      </div>
+    </section>
+    <section id="customer" class="view" hidden>
+      <h1>Customer</h1>
+      <div class="panel"><h2>Sakura Residence Demo Project</h2>
+        <dl class="details"><dt>Project</dt><dd>Three-sector irrigation example</dd><dt>Contact</dt><dd>Not provided</dd><dt>Address</dt><dd>Not provided</dd></dl>
+        <h3>Files</h3><ul class="files"><li><a href="../demo-data/project.json" download>Sample project input</a></li><li><a href="../demo-data/materials-example.xlsx" download>Sample material workbook</a></li></ul>
+        <button class="text-button" data-go="pump">Open pump requirement</button>
+      </div><p>This is a fixed example record. Changes are not saved.</p>
+    </section>
+    <noscript>Enable JavaScript to use the demo.</noscript>
+  </main>
+  <footer>Independent demonstration. The commercial application and its data remain private.</footer>
+</body>
+</html>

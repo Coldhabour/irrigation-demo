@@ -1,0 +1,12 @@
+flowchart LR
+    A[CSV / XLS / XLSX] --> B[Import and validation]
+    B --> C[Material comparison and review]
+    D[(Local SQLite records)] --> C
+    C --> E[PDF documentation]
+    F[Customer dossiers] <--> D
+    F --> G[Local attachments]
+    H[Flow and head / well inputs] --> I[Pump services]
+    D --> I
+    I --> J[Technical report]
+    I --> C
+    D -. Legacy quotation path .-> K[Excel export]
